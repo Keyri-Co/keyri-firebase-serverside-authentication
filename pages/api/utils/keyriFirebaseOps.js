@@ -1,3 +1,5 @@
+import { KeyriError } from '../errorList';
+
 const crypto = require('crypto');
 const admin = require('firebase-admin');
 const { getFirestore } = require('firebase-admin/firestore');
@@ -97,7 +99,9 @@ const keyriLogin = async (email, data, signatureB64) => {
     .get()
     .catch((error) => {
       console.log(`Firebase error: ${error}`);
+      throw new KeyriError(1000, error.message);
     });
+  if (!userDoc || !userDoc.data()) throw new KeyriError(1002);
   const pubKeyB64 = userDoc.data().publicKey;
   // Verify the signature
   const verified = verifySignature(pubKeyB64, data, signatureB64);
@@ -108,9 +112,11 @@ const keyriLogin = async (email, data, signatureB64) => {
       .getUserByEmail(email)
       .catch((error) => {
         console.log(`Firebase error: ${error}`);
+        throw new KeyriError(1000, error.message);
       });
     return admin.auth().createCustomToken(userRecord.uid);
   }
+  throw new KeyriError(1003);
 };
 
 module.exports = { keyriRegister, keyriLogin };

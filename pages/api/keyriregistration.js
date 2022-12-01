@@ -1,6 +1,7 @@
 import Cors from 'cors';
 
 import { keyriRegister } from './utils/keyriFirebaseOps';
+import { KeyriError } from './errorHandler';
 
 const cors = Cors({
   methods: ['POST', 'GET', 'HEAD'],
@@ -20,11 +21,15 @@ function runMiddleware(req, res, fn) {
 
 export default async function handler(req, res) {
   await runMiddleware(req, res, cors);
-  const { email, publicKey } = req.body;
-  if (typeof email === 'undefined' || typeof publicKey === 'undefined') {
-    res.status(400).send('Missing data');
-  } else {
-    const token = await keyriRegister(email, publicKey);
-    res.send(token);
+  try {
+    const { email, publicKey } = req.body;
+    if (!email || !publicKey) {
+      throw new KeyriError(1001);
+    } else {
+      const token = await keyriRegister(email, publicKey);
+      return res.send(token);
+    }
+  } catch(err) {
+    handleServerError(err, res);
   }
 }
