@@ -38,7 +38,8 @@ const keyriRegister = async (email, publicKey) => {
       },
       { merge: true }
     );
-    return 'User with this email already exists. Public key added or updated.';
+    const token = await admin.auth().createCustomToken(userRecord.uid);
+    return token;
   } else {
     try {
       // Create the user in Firebase Authentication
