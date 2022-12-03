@@ -25,6 +25,9 @@ export default async function handler(req, res) {
     res.status(400).send('Missing data');
   } else {
     const token = await keyriRegister(email, publicKey);
+    if (!token) {
+      res.status(500).send('Could not register');
+    }
     res.send(token);
   }
 }

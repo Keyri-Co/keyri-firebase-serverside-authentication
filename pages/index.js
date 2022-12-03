@@ -8,9 +8,11 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
+  EmailAuthProvider,
+  linkWithCredential,
 } from 'firebase/auth';
 
-const firebaseConfig = {
+const firebaseClientConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
@@ -19,7 +21,7 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseClientConfig);
 const auth = getAuth();
 
 export default function Home() {
@@ -27,12 +29,16 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState('');
+  const [keyriUser, setKeyriUser] = useState(false);
+  const [passwordUser, setPasswordUser] = useState(false);
+  const [unifiedUser, setUnifiedUser] = useState(false);
 
   useEffect(() => {
     console.log('user', user);
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUser(user);
+        defineUserType(user);
         console.log('user', user);
       } else {
         setUser(null);
@@ -68,6 +74,8 @@ export default function Home() {
     setAuthError('');
     try {
       await createUserWithEmailAndPassword(auth, email, password);
+      setEmail('');
+      setPassword('');
     } catch (error) {
       setAuthError('A user with this email already exists. Please try logging in instead.');
       console.log(error);
@@ -79,6 +87,8 @@ export default function Home() {
     setAuthError('');
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      setEmail('');
+      setPassword('');
     } catch (error) {
       setAuthError("Invalid email or password OR you're not registered");
       console.log(error);
@@ -107,9 +117,38 @@ export default function Home() {
     }
   };
 
+  const defineUserType = (user) => {
+    if (user.providerData[0].providerId === 'password') {
+      setPasswordUser(true);
+    } else if (user.providerData.length === 0) {
+      setKeyriUser(true);
+    }
+    if (keyriUser && passwordUser) {
+      setPasswordUser(false);
+      setKeyriUser(false);
+      setUnifiedUser(true);
+    }
+  };
+
   const logOut = async () => {
     try {
       await signOut(auth);
+      setEmail('');
+      setPassword('');
+      setKeyriUser(false);
+      setPasswordUser(false);
+      setUnifiedUser(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addPasswordToUser = async (email, password) => {
+    try {
+      const credential = EmailAuthProvider.credential(email, password);
+      await user.linkWithCredential(credential);
+      setPasswordUser(true);
+      setUnifiedUser(true);
     } catch (error) {
       console.log(error);
     }
@@ -138,15 +177,45 @@ export default function Home() {
 
         {user ? (
           <>
-            <p className={styles.description}>You're logged in!</p>
+            {unifiedUser ? (
+              <>
+                <p className={styles.description}>
+                  Perfect! You're registered both through email/password login AND Keyri auth.
+                </p>
+                <p style={{ textAlign: 'center' }}>You can use either method to log into this account.</p>
+              </>
+            ) : keyriUser ? (
+              <>
+                <p className={styles.description}>Awesome, you're all set with Keyri passwordless authentication.</p>
+                <p style={{ textAlign: 'center' }}>
+                  You can now add a password to your account with the form below if you want redundancy.
+                </p>
+                <input
+                  type={'password'}
+                  className={styles.traditionalAuthInput}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder={'password'}
+                />
+                <button className={styles.authButton} disabled={!password} onClick={addPasswordToUser}>
+                  Add password to account
+                </button>
+              </>
+            ) : passwordUser ? (
+              <>
+                <p className={styles.description}>Great, you're registered with a password!</p>
+                <p style={{ textAlign: 'center' }}>
+                  To try out Keyri QR login, sign in to the example iOS app with the same email/password, then tap
+                  "Enable Keyri"
+                </p>
+                <p style={{ textAlign: 'center' }}>You can then come back here and log in by scanning the QR code.</p>
+              </>
+            ) : null}
             <p>
               Your user <code>displayName</code> is <b>{user.email}</b>
             </p>
             <p>
               Your user <code>uid</code> is <b>{user.uid}</b>
-            </p>
-            <p className={styles.description}>
-              Now try logging in with the other method - if you used password-based auth, try Keyri QR (and vice versa)
             </p>
             <button className={styles.authButton} onClick={logOut}>
               Log out
