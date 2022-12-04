@@ -121,7 +121,7 @@ export default function Home() {
   };
 
   const defineUserType = async (user) => {
-    const userPublicKey = await getDoc(doc(db, 'users', user.email)).publicKey;
+    const userPublicKey = await (await getDoc(doc(db, 'users', user.email))).data();
     console.log('userPublicKey', userPublicKey);
 
     if (userPublicKey && user.providerData[0] !== null) {
