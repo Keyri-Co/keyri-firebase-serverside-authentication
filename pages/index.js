@@ -104,7 +104,8 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: payload,
-      }).then((res) => loginCustomToken(res.body));
+      });
+      console.log('customToken', customToken);
     } catch (error) {
       setAuthError('Could not log in with custom token');
     }
