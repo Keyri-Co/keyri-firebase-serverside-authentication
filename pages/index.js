@@ -106,7 +106,6 @@ export default function Home() {
       }).then((res) => res.text());
       console.log('customToken', customToken);
       await loginCustomToken(customToken);
-      await defineUserType(user);
     } catch (error) {
       setAuthError('Could not log in with custom token');
     }
@@ -115,14 +114,15 @@ export default function Home() {
   const loginCustomToken = async (token) => {
     try {
       await signInWithCustomToken(auth, token);
+      await defineUserType(user);
     } catch (error) {
       console.log(error);
     }
   };
 
   const defineUserType = async (user) => {
-    const userPublicKey = await (await getDoc(doc(db, 'users', user.email))).data();
-    console.log('userPublicKey', userPublicKey);
+    const userRecord = await (await getDoc(doc(db, 'users', user.email))).data();
+    console.log('userRecord', userRecord);
 
     if (userPublicKey && user.providerData[0] !== null) {
       setUnifiedUser(true);
