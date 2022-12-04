@@ -36,15 +36,12 @@ export default function Home() {
   const [unifiedUser, setUnifiedUser] = useState(false);
 
   useEffect(() => {
-    console.log('user', user);
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUser(user);
         defineUserType(user);
-        console.log('user', user);
       } else {
         setUser(null);
-        console.log('user', user);
       }
     });
   }, []);
@@ -56,7 +53,6 @@ export default function Home() {
         if (!data.error) {
           try {
             const payload = data.data;
-            console.log('payload', payload);
             await handleQrLogin(payload);
           } catch (error) {
             setAuthError('Could not log in with custom token');
@@ -95,7 +91,6 @@ export default function Home() {
   };
 
   const handleQrLogin = async (payload) => {
-    console.log('Sent payload', payload);
     try {
       const customToken = await fetch('https://keyri-firebase-serverside-authentication.vercel.app/api/keyrilogin', {
         method: 'POST',
@@ -104,7 +99,6 @@ export default function Home() {
         },
         body: payload,
       }).then((res) => res.text());
-      console.log('customToken', customToken);
       await loginCustomToken(customToken);
     } catch (error) {
       setAuthError('Could not log in with custom token');
@@ -123,19 +117,17 @@ export default function Home() {
     try {
       const docRef = doc(db, 'users', user.email);
       const docSnap = await getDoc(docRef);
-      console.log('docSnap', docSnap);
 
       let userPublicKey;
       if (docSnap.exists()) {
-        console.log('Document data:', docSnap.data());
         userPublicKey = docSnap.data().publicKey;
       }
 
-      if (userPublicKey && user.providerData[0] !== null) {
+      if (userPublicKey && user.providerData.length !== 0) {
         setUnifiedUser(true);
-      } else if (!userPublicKey && user.providerData[0] !== null) {
+      } else if (!userPublicKey && user.providerData.length !== 0) {
         setPasswordUser(true);
-      } else if (userPublicKey && user.providerData[0] === null) {
+      } else if (userPublicKey && user.providerData.length === 0) {
         setKeyriUser(true);
       }
     } catch (error) {
