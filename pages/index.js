@@ -144,7 +144,8 @@ export default function Home() {
     }
   };
 
-  const addPasswordToUser = async (email, password) => {
+  const addPasswordToUser = async (e) => {
+    e.preventDefault();
     try {
       const credential = EmailAuthProvider.credential(email, password);
       await linkWithCredential(auth.currentUser, credential);
