@@ -121,8 +121,8 @@ export default function Home() {
   };
 
   const defineUserType = async (user) => {
-    const userRecord = await (await getDoc(doc(db, 'users', user.email))).data();
-    console.log('userRecord', userRecord);
+    const userPublicKey = await (await getDoc(doc(db, 'users', user.email))).data().publicKey;
+    console.log('userPublicKey', userPublicKey);
 
     if (userPublicKey && user.providerData[0] !== null) {
       setUnifiedUser(true);
