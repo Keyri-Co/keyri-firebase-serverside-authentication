@@ -104,6 +104,7 @@ export default function Home() {
       }).then((res) => res.text());
       console.log('customToken', customToken);
       await loginCustomToken(customToken);
+      setKeyriUser(true);
     } catch (error) {
       setAuthError('Could not log in with custom token');
     }
