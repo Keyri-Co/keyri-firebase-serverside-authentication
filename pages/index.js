@@ -97,6 +97,7 @@ export default function Home() {
   };
 
   const handleQrLogin = async (payload) => {
+    console.log('Sent payload', payload);
     try {
       const customToken = await fetch('/api/keyrilogin', {
         method: 'POST',
