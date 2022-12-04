@@ -264,7 +264,7 @@ export default function Home() {
                 <br />
                 <div className={styles.qrContainer}>
                   <iframe
-                    src='./KeyriQR.html?Environment=dev&Origin=keyri-firebase-serverside-authentication.vercel.app'
+                    src='./KeyriQR.html'
                     id='qr-iframe'
                     height={300}
                     width={300}
