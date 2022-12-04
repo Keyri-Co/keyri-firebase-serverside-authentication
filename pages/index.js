@@ -147,7 +147,7 @@ export default function Home() {
   const addPasswordToUser = async (email, password) => {
     try {
       const credential = EmailAuthProvider.credential(email, password);
-      await user.linkWithCredential(credential);
+      await linkWithCredential(credential);
       setPasswordUser(true);
       setUnifiedUser(true);
     } catch (error) {
