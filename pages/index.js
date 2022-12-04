@@ -114,7 +114,6 @@ export default function Home() {
   const loginCustomToken = async (token) => {
     try {
       await signInWithCustomToken(auth, token);
-      await defineUserType(user);
     } catch (error) {
       console.log(error);
     }
