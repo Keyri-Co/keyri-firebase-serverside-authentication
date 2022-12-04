@@ -120,27 +120,22 @@ export default function Home() {
   };
 
   const defineUserType = async (user) => {
-    const docRef = doc(db, 'keyriUsers', user.email);
-    const docSnap = await getDoc(docRef);
-    console.log('docSnap', docSnap);
-    let userPublicKey;
-
     try {
+      const docRef = doc(db, 'users', user.email);
+      const docSnap = await getDoc(docRef);
+      console.log('docSnap', docSnap);
+
+      let userPublicKey;
       if (docSnap.exists()) {
+        console.log('Document data:', docSnap.data());
         userPublicKey = docSnap.data().publicKey;
       }
 
       if (userPublicKey && user.providerData[0] !== null) {
-        console.log('userPublicKey', userPublicKey);
-        console.log('user.providerData[0]', user.providerData[0]);
         setUnifiedUser(true);
       } else if (!userPublicKey && user.providerData[0] !== null) {
-        console.log('userPublicKey', userPublicKey);
-        console.log('user.providerData[0]', user.providerData[0]);
         setPasswordUser(true);
       } else if (userPublicKey && user.providerData[0] === null) {
-        console.log('userPublicKey', userPublicKey);
-        console.log('user.providerData[0]', user.providerData[0]);
         setKeyriUser(true);
       }
     } catch (error) {
