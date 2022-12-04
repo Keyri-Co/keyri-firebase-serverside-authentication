@@ -103,6 +103,7 @@ export default function Home() {
         body: payload,
       }).then((res) => res.text());
       console.log('customToken', customToken);
+      await loginCustomToken(customToken);
     } catch (error) {
       setAuthError('Could not log in with custom token');
     }
