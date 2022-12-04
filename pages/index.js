@@ -53,12 +53,8 @@ export default function Home() {
         const { data } = evt;
         if (!data.error) {
           try {
-            console.log('data', data);
-            const payload = JSON.parse(data.data);
+            const payload = data.data;
             console.log('payload', payload);
-            // const email = payload.email;
-            // const timestamp_nonce = payload.data;
-            // const signature = payload.signature;
             await handleQrLogin(payload);
           } catch (error) {
             setAuthError('Could not log in with custom token');
@@ -99,7 +95,7 @@ export default function Home() {
   const handleQrLogin = async (payload) => {
     console.log('Sent payload', payload);
     try {
-      const customToken = await fetch('/api/keyrilogin', {
+      const customToken = await fetch('https://keyri-firebase-serverside-authentication.vercel.app/api/keyrilogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
