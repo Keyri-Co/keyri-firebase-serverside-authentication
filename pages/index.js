@@ -122,6 +122,7 @@ export default function Home() {
   const defineUserType = async (user) => {
     const docRef = doc(db, 'keyriUsers', user.email);
     const docSnap = await getDoc(docRef);
+    console.log('docSnap', docSnap);
     let userPublicKey;
 
     try {
