@@ -11,6 +11,7 @@ import {
   EmailAuthProvider,
   linkWithCredential,
 } from 'firebase/auth';
+import { getFirestore, collection, doc, getDoc } from 'firebase/firestore';
 
 const firebaseClientConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY,
@@ -22,7 +23,8 @@ const firebaseClientConfig = {
 };
 
 const app = initializeApp(firebaseClientConfig);
-const auth = getAuth();
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 export default function Home() {
   const [user, setUser] = useState(() => auth.currentUser);
@@ -104,7 +106,7 @@ export default function Home() {
       }).then((res) => res.text());
       console.log('customToken', customToken);
       await loginCustomToken(customToken);
-      setKeyriUser(true);
+      await defineUserType(auth.currentUser);
     } catch (error) {
       setAuthError('Could not log in with custom token');
     }
@@ -118,16 +120,15 @@ export default function Home() {
     }
   };
 
-  const defineUserType = (user) => {
-    if (user.providerData[0] !== null) {
-      setPasswordUser(true);
-    } else if (user.providerData.length === 0) {
-      setKeyriUser(true);
-    }
-    if (keyriUser && passwordUser) {
-      setPasswordUser(false);
-      setKeyriUser(false);
+  const defineUserType = async (user) => {
+    const userPublicKey = await getDoc(doc(db, 'users', user.email)).publicKey;
+
+    if (userPublicKey && user.providerData[0] !== null) {
       setUnifiedUser(true);
+    } else if (!userPublicKey && user.providerData[0] !== null) {
+      setPasswordUser(true);
+    } else if (userPublicKey && user.providerData[0] === null) {
+      setKeyriUser(true);
     }
   };
 
@@ -149,8 +150,7 @@ export default function Home() {
     try {
       const credential = EmailAuthProvider.credential(user.email, password);
       await linkWithCredential(auth.currentUser, credential);
-      setPasswordUser(true);
-      setUnifiedUser(true);
+      defineUserType(auth.currentUser);
     } catch (error) {
       console.log(error);
     }
@@ -198,6 +198,7 @@ export default function Home() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={'password'}
+                  style={{ maxWidth: '450px' }}
                 />
                 <button className={styles.authButton} disabled={!password} onClick={addPasswordToUser}>
                   Add password to account
