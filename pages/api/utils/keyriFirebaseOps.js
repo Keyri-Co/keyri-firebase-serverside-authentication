@@ -73,6 +73,9 @@ const verifySignature = (pubKeyB64, data, signatureB64) => {
   const timestamp = parseInt(data.slice(0, 13), 10);
   const now = new Date().getTime();
   if (Number.isNaN(timestamp) || Math.abs(now - timestamp) > 60_000) {
+    console.log(`Invalid timestamp: ${timestamp}`);
+    console.log(`Now: ${now}`);
+    console.log(`Difference: ${Math.abs(now - timestamp)}`);
     return false;
   }
 
