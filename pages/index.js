@@ -55,6 +55,7 @@ export default function Home() {
           try {
             console.log('data', data);
             const payload = JSON.parse(data.data);
+            console.log('payload', payload);
             // const email = payload.email;
             // const timestamp_nonce = payload.data;
             // const signature = payload.signature;
