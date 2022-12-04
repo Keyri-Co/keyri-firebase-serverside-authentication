@@ -119,7 +119,7 @@ export default function Home() {
   };
 
   const defineUserType = (user) => {
-    if (user.providerData[0].providerId === 'password') {
+    if (user.providerData[0] !== null) {
       setPasswordUser(true);
     } else if (user.providerData.length === 0) {
       setKeyriUser(true);
