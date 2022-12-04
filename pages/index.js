@@ -120,9 +120,14 @@ export default function Home() {
   };
 
   const defineUserType = async (user) => {
+    const docRef = doc(db, 'keyriUsers', user.email);
+    const docSnap = await getDoc(docRef);
+    let userPublicKey;
+
     try {
-      const userPublicKey = await getDoc(doc(db, 'users', user.email)).data().publicKey;
-      console.log('userPublicKey', userPublicKey);
+      if (docSnap.exists()) {
+        userPublicKey = docSnap.data().publicKey;
+      }
 
       if (userPublicKey && user.providerData[0] !== null) {
         console.log('userPublicKey', userPublicKey);
