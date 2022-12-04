@@ -106,7 +106,7 @@ export default function Home() {
       }).then((res) => res.text());
       console.log('customToken', customToken);
       await loginCustomToken(customToken);
-      await defineUserType(auth.currentUser);
+      await defineUserType(user);
     } catch (error) {
       setAuthError('Could not log in with custom token');
     }
@@ -122,6 +122,7 @@ export default function Home() {
 
   const defineUserType = async (user) => {
     const userPublicKey = await getDoc(doc(db, 'users', user.email)).publicKey;
+    console.log('userPublicKey', userPublicKey);
 
     if (userPublicKey && user.providerData[0] !== null) {
       setUnifiedUser(true);
@@ -150,7 +151,7 @@ export default function Home() {
     try {
       const credential = EmailAuthProvider.credential(user.email, password);
       await linkWithCredential(auth.currentUser, credential);
-      defineUserType(auth.currentUser);
+      defineUserType(user);
     } catch (error) {
       console.log(error);
     }
