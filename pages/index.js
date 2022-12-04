@@ -120,15 +120,25 @@ export default function Home() {
   };
 
   const defineUserType = async (user) => {
-    const userPublicKey = await (await getDoc(doc(db, 'users', user.email))).data().publicKey;
-    console.log('userPublicKey', userPublicKey);
+    try {
+      const userPublicKey = await (await getDoc(doc(db, 'users', user.email))).data().publicKey;
+      console.log('userPublicKey', userPublicKey);
 
-    if (userPublicKey && user.providerData[0] !== null) {
-      setUnifiedUser(true);
-    } else if (!userPublicKey && user.providerData[0] !== null) {
-      setPasswordUser(true);
-    } else if (userPublicKey && user.providerData[0] === null) {
-      setKeyriUser(true);
+      if (userPublicKey && user.providerData[0] !== null) {
+        console.log('userPublicKey', userPublicKey);
+        console.log('user.providerData[0]', user.providerData[0]);
+        setUnifiedUser(true);
+      } else if (!userPublicKey && user.providerData[0] !== null) {
+        console.log('userPublicKey', userPublicKey);
+        console.log('user.providerData[0]', user.providerData[0]);
+        setPasswordUser(true);
+      } else if (userPublicKey && user.providerData[0] === null) {
+        console.log('userPublicKey', userPublicKey);
+        console.log('user.providerData[0]', user.providerData[0]);
+        setKeyriUser(true);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
