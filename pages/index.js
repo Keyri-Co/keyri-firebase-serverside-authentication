@@ -11,7 +11,7 @@ import {
   EmailAuthProvider,
   linkWithCredential,
 } from 'firebase/auth';
-import { getFirestore, collection, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 const firebaseClientConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY,
@@ -31,6 +31,7 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [keyriUser, setKeyriUser] = useState(false);
   const [passwordUser, setPasswordUser] = useState(false);
   const [unifiedUser, setUnifiedUser] = useState(false);
@@ -92,6 +93,7 @@ export default function Home() {
 
   const handleQrLogin = async (payload) => {
     try {
+      setLoading(true);
       const customToken = await fetch('https://keyri-firebase-serverside-authentication.vercel.app/api/keyrilogin', {
         method: 'POST',
         headers: {
@@ -100,6 +102,7 @@ export default function Home() {
         body: payload,
       }).then((res) => res.text());
       await loginCustomToken(customToken);
+      setLoading(false);
     } catch (error) {
       setAuthError('Could not log in with custom token');
     }
@@ -140,6 +143,8 @@ export default function Home() {
       await signOut(auth);
       setEmail('');
       setPassword('');
+      setAuthError('');
+      setLoading(false);
       setKeyriUser(false);
       setPasswordUser(false);
       setUnifiedUser(false);
@@ -278,6 +283,9 @@ export default function Home() {
                     style={{ border: 2, borderColor: 'white', center: 'true' }}
                   />
                 </div>
+                <br />
+                <br />
+                {loading && <p className={styles.errorMsg}>'Loading'</p>}
               </div>
             </div>
           </>
