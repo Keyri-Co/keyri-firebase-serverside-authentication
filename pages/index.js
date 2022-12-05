@@ -282,10 +282,9 @@ export default function Home() {
                     frameBorder={0}
                     style={{ border: 2, borderColor: 'white', center: 'true' }}
                   />
+                  <br />
+                  {loading && <p className={styles.errorMsg}>'Loading'</p>}
                 </div>
-                <br />
-                <br />
-                {loading && <p className={styles.errorMsg}>'Loading'</p>}
               </div>
             </div>
           </>
