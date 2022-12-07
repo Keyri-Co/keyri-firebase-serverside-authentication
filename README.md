@@ -1,3 +1,5 @@
+# Keyri + Firebase Passwordless QR Authentication Server and Web App
+
 This is a project from [Keyri](https://keyri.com/) demonstrating how our passwordless and QR authentication system can be used across an application spanning web and native mobile clients that use Firebase for user management and authentication. This is a [Next.js](https://nextjs.org/) project that, for the sake of simplicity, utilizes Next's API route functionality to simulate a "real" Node.js server using, for example, Express.
 
 A key feature of this project is that one Firebase user can be authenticated using either Firebase's built-in authentication interfaces or Keyri's passwordless and QR authentication system interchangeably. This is achieved by using Firebase's [custom token](https://firebase.google.com/docs/auth/admin/create-custom-tokens) functionality to create a custom token for the user that is then used to authenticate the user with your Firebase-based client application. The user, whether authenticated through Firebase methods or Keyri passwordless auth, is defined by its Firebase UID, thereby ensuring perfect consistency between the two auth flows.
@@ -54,6 +56,7 @@ NOTABLY, the /api/keyrilogin route can be hit directly by your Keyri SDK-enabled
 To learn more about Keyri, take a look at the following resources:
 
 - [Keyri Documentation](https://docs.keyri.com) - learn about Keyri QR and passwordless authentication features.
+- [Firebase Server-Side-Specific Documentation](https://docs.keyri.com/firebase-server-side-authentication) - documentation specifically about this server + web app + companion mobile app
 - [Keyri Youtube Channel](https://www.youtube.com/@Keyri) - a series of demos of Keyri UX and security, as well as step-by-step tutorials on incorporating Keyri authentication into various authentication systems.
 
 # Get started with Keyri
