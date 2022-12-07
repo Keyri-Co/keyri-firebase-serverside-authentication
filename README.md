@@ -2,7 +2,7 @@ This is a project from [Keyri](https://keyri.com/) demonstrating how our passwor
 
 A key feature of this project is that one Firebase user can be authenticated using either Firebase's built-in authentication interfaces or Keyri's passwordless and QR authentication system interchangeably. This is achieved by using Firebase's [custom token](https://firebase.google.com/docs/auth/admin/create-custom-tokens) functionality to create a custom token for the user that is then used to authenticate the user with your Firebase-based client application. The user, whether authenticated through Firebase methods or Keyri passwordless auth, is defined by its Firebase UID, thereby ensuring perfect consistency between the two auth flows.
 
-The live demo of this web project can be found here: [TODO: Link to live vercel app](https://firebase-server-auth-web.vercel.app/). The companion mobile app is available in its own repository [TODO: Link to Aditya's repo](), and a build of that app is available upon request via Testflight. Please email [zain@keyri.com](mailto:zain@keyri.com) to request access.
+The live demo of this web project can be found here: [LIVE DEMO](https://keyri-firebase-serverside-authentication.vercel.app/). The companion mobile app is available in its own repository [iOS App](https://github.com/Keyri-Co/firebaseServersideIos), and a build of that app is available upon request via Testflight. Please email [zain@keyri.com](mailto:zain@keyri.com) to request access.
 
 ### Assumptions
 
@@ -47,7 +47,7 @@ Both of these routes return a custom Firebase token that can be exchanged for a 
 
 In this web app, the /api/keyrilogin route is hit upon scanning the QR code with the aforementioned Keyri SDK-enabled mobile app, and functions that wrap this call are used to seamlessly log the user in without any manual input.
 
-NOTABLY, the /api/keyrilogin route can be hit directly by your Keyri SDK-enabled mobile application. Doing so would allow instant, input-less login upon, for example, passing a biometrics check like FaceID. This functionality, in addition to QR login on the web app, is implemented in the companion mobile app in this project: [TODO: link to Aditya's repo]().
+NOTABLY, the /api/keyrilogin route can be hit directly by your Keyri SDK-enabled mobile application. Doing so would allow instant, input-less login upon, for example, passing a biometrics check like FaceID. This functionality, in addition to QR login on the web app, is implemented in the companion mobile app in this project: [Example iOS App](https://github.com/Keyri-Co/firebaseServersideIos).
 
 ## Learn More
 
